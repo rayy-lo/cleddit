@@ -1,12 +1,10 @@
-import { MikroORM } from "@mikro-orm/core";
+import "reflect-metadata";
+import { createConnection } from "typeorm";
 import { __prod__ } from "./constants";
+import { Post } from "./entity/Post";
 
-const main = async () => {
-  const orm = await MikroORM.init({
-    dbName: "cleddit",
-    debug: __prod__,
-    type: "postgresql",
-  });
-};
-
-main();
+createConnection()
+  .then(async (connection) => {
+    console.log("successful connection");
+  })
+  .catch((error) => console.log("Error: ", error));
