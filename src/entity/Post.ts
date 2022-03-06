@@ -9,14 +9,14 @@ import {
 @Entity()
 export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
-  _id!: number;
+  id: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "date" })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "date" })
   updatedAt: Date;
 
   @Column()
-  title!: string;
+  title: string;
 }
