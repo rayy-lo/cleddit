@@ -1,5 +1,4 @@
 import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
-import { getConnection, InsertResult } from "typeorm";
 import { Post } from "../entity/Post";
 
 @Resolver()
@@ -15,16 +14,34 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
-  async createPost(@Arg("title") title: string): Promise<InsertResult> {
-    const result = await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(Post)
-      .values({
-        title,
-      })
-      .execute();
+  async createPost(@Arg("title") title: string): Promise<Post> {
+    return Post.create({
+      title,
+    }).save();
+  }
 
-    return result.raw[0];
+  @Mutation(() => Post)
+  async updatePost(
+    @Arg("id") id: number,
+    @Arg("title", () => String, { nullable: true }) title: string
+  ): Promise<Post> {
+    const post = await Post.findOne({ id });
+
+    if (!post) throw new Error("No Post Found with ID");
+    if (typeof title !== undefined) {
+      post.title = title;
+      post.save();
+    }
+
+    return post;
+  }
+
+  @Mutation(() => Boolean)
+  async deletePost(@Arg("id") id: number): Promise<boolean> {
+    await Post.delete(id).catch((err) => {
+      return false;
+    });
+
+    return true;
   }
 }
