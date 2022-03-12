@@ -5,6 +5,7 @@ import { __prod__ } from "./constants";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { PostResolver } from "./resolvers/post";
+import { UserResolver } from "./resolvers/user";
 
 createConnection()
   .then(async (connection) => {
@@ -12,7 +13,7 @@ createConnection()
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [PostResolver],
+        resolvers: [PostResolver, UserResolver],
         validate: false,
       }),
     });
