@@ -1,5 +1,6 @@
 import {
   Arg,
+  Ctx,
   Field,
   InputType,
   Mutation,
@@ -9,6 +10,7 @@ import {
 } from "type-graphql";
 import { User } from "../entity/User";
 import argon2 from "argon2";
+import { MyContext } from "../types";
 
 @InputType()
 class UsernamePasswordInput {
@@ -39,6 +41,16 @@ class FieldError {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req }: MyContext) {
+    if (!req.session.user) {
+      return null;
+    }
+
+    const user = await User.findOne({ username: req.session.user.username });
+    return user;
+  }
+
   @Mutation(() => UserResponse)
   async register(
     @Arg("options") options: UsernamePasswordInput
@@ -92,7 +104,8 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("options") options: UsernamePasswordInput
+    @Arg("options") options: UsernamePasswordInput,
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const user = await User.findOne({ username: options.username });
 
@@ -119,6 +132,8 @@ export class UserResolver {
         ],
       };
     }
+
+    req.session.user = { username: options.username };
 
     return {
       user,
