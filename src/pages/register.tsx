@@ -1,15 +1,6 @@
 import { Formik, Field } from "formik";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, VStack } from "@chakra-ui/react";
+import { InputField } from "../components/InputField";
 
 interface RegisterProps {}
 
@@ -27,39 +18,25 @@ function Register() {
             alert(JSON.stringify(values, null, 2));
           }}
         >
-          {({ handleSubmit, errors, touched }) => (
+          {({ handleSubmit, errors, touched, isSubmitting }) => (
             <form onSubmit={handleSubmit}>
               <VStack spacing={4} align="flex-start">
-                <FormControl>
-                  <FormLabel htmlFor="email">Email Address</FormLabel>
-                  <Field
-                    as={Input}
-                    id="email"
-                    name="email"
-                    type="email"
-                    variant="filled"
-                  />
-                </FormControl>
-                <FormControl isInvalid={!!errors.password && touched.password}>
-                  <FormLabel htmlFor="password">Password</FormLabel>
-                  <Field
-                    as={Input}
-                    id="password"
-                    name="password"
-                    type="password"
-                    variant="filled"
-                    validate={(value) => {
-                      let error;
-
-                      if (value.length < 5) {
-                        error = "Password must contain at least 6 characters";
-                      }
-
-                      return error;
-                    }}
-                  />
-                  <FormErrorMessage>{errors.password}</FormErrorMessage>
-                </FormControl>
+                <InputField
+                  label="Email Address"
+                  id="email"
+                  name="email"
+                  type="email"
+                  variant="filled"
+                  errors={errors}
+                />
+                <InputField
+                  id="password"
+                  name="password"
+                  type="password"
+                  variant="filled"
+                  label="Password"
+                  errors={errors}
+                />
                 <Field
                   as={Checkbox}
                   id="rememberMe"
@@ -68,7 +45,12 @@ function Register() {
                 >
                   Remember me?
                 </Field>
-                <Button type="submit" colorScheme="purple" isFullWidth>
+                <Button
+                  isLoading={isSubmitting}
+                  type="submit"
+                  colorScheme="purple"
+                  isFullWidth
+                >
                   Login
                 </Button>
               </VStack>
