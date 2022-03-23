@@ -9,6 +9,7 @@ import { UserResolver } from "./resolvers/user";
 import { createClient } from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
+import cors from "cors";
 
 createConnection()
   .then(async (connection) => {
@@ -18,6 +19,13 @@ createConnection()
     const redisClient = createClient();
 
     app.set("trust proxy", process.env.NODE_ENV !== "production");
+
+    app.use(
+      cors({
+        origin: "localhost:3100",
+        credentials: true,
+      })
+    );
 
     app.use(
       session({
@@ -47,7 +55,7 @@ createConnection()
 
     apolloServer.applyMiddleware({
       app,
-      cors: { credentials: true, origin: "https://studio.apollographql.com" },
+      cors: false,
     });
 
     app.listen(3100, () => {
