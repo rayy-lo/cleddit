@@ -1,10 +1,27 @@
 import { Formik, Field } from "formik";
 import { Box, Button, Checkbox, Flex, VStack } from "@chakra-ui/react";
 import { InputField } from "../components/InputField";
+import { gql, useMutation } from "@apollo/client";
 
 interface RegisterProps {}
 
-function Register() {
+const REGISTER_MUT = gql`
+  mutation Register($options: UsernamePasswordInput!) {
+    register(options: $options) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+      }
+    }
+  }
+`;
+
+const Register: React.FC<RegisterProps> = ({}) => {
+  const [register, { loading, error }] = useMutation(REGISTER_MUT);
+
   return (
     <Flex bg="gray.100" align="center" justify="center" h="100vh">
       <Box bg="white" p={6} rounded="md" w={64}>
@@ -14,8 +31,20 @@ function Register() {
             password: "",
             rememberMe: false,
           }}
-          onSubmit={(values) => {
-            alert(JSON.stringify(values, null, 2));
+          onSubmit={(values, actions) => {
+            register({
+              variables: {
+                options: {
+                  password: values.password,
+                  username: values.email,
+                },
+              },
+            })
+              .then((res) => console.log(res))
+              .catch((err) => {
+                console.error("Error submitting form", err);
+              })
+              .finally(() => actions.setSubmitting(false));
           }}
         >
           {({ handleSubmit, errors, touched, isSubmitting }) => (
@@ -51,7 +80,7 @@ function Register() {
                   colorScheme="purple"
                   isFullWidth
                 >
-                  Login
+                  Register
                 </Button>
               </VStack>
             </form>
@@ -60,6 +89,6 @@ function Register() {
       </Box>
     </Flex>
   );
-}
+};
 
 export default Register;
