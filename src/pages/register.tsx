@@ -2,6 +2,7 @@ import { Formik, Field } from "formik";
 import { Box, Button, Checkbox, Flex, VStack } from "@chakra-ui/react";
 import { InputField } from "../components/InputField";
 import { gql, useMutation } from "@apollo/client";
+import { toErrorMap } from "../utils/toErrorMap";
 
 interface RegisterProps {}
 
@@ -20,7 +21,7 @@ const REGISTER_MUT = gql`
 `;
 
 const Register: React.FC<RegisterProps> = ({}) => {
-  const [register, { loading, error }] = useMutation(REGISTER_MUT);
+  const [register] = useMutation(REGISTER_MUT);
 
   return (
     <Flex bg="gray.100" align="center" justify="center" h="100vh">
@@ -31,20 +32,21 @@ const Register: React.FC<RegisterProps> = ({}) => {
             password: "",
             rememberMe: false,
           }}
-          onSubmit={(values, actions) => {
-            register({
+          onSubmit={async (values, actions) => {
+            const response = await register({
               variables: {
                 options: {
                   password: values.password,
-                  username: values.email,
+                  email: values.email,
                 },
               },
-            })
-              .then((res) => console.log(res))
-              .catch((err) => {
-                console.error("Error submitting form", err);
-              })
-              .finally(() => actions.setSubmitting(false));
+            });
+
+            if (response.data?.register.errors) {
+              actions.setErrors(toErrorMap(response.data.register.errors));
+            }
+
+            actions.setSubmitting(false);
           }}
         >
           {({ handleSubmit, errors, touched, isSubmitting }) => (
