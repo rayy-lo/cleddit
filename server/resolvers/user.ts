@@ -15,7 +15,7 @@ import { MyContext } from "../types";
 @InputType()
 class UsernamePasswordInput {
   @Field()
-  username: string;
+  email: string;
 
   @Field()
   password: string;
@@ -56,12 +56,12 @@ export class UserResolver {
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    if (options.username.length <= 5) {
+    if (options.email.length <= 5) {
       return {
         errors: [
           {
-            field: "username",
-            message: "Username cannot be less than 5 characters",
+            field: "email",
+            message: "Email cannot be less than 5 characters",
           },
         ],
       };
@@ -78,7 +78,7 @@ export class UserResolver {
       };
     }
 
-    const user = await User.findOne({ username: options.username });
+    const user = await User.findOne({ username: options.email });
 
     if (user) {
       return {
@@ -94,11 +94,11 @@ export class UserResolver {
     const hashedPassword = await argon2.hash(options.password);
 
     const newUser = await User.create({
-      username: options.username,
+      username: options.email,
       password: hashedPassword,
     }).save();
 
-    req.session.user = { username: options.username };
+    req.session.user = { username: options.email };
 
     return {
       user: newUser,
@@ -110,7 +110,7 @@ export class UserResolver {
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const user = await User.findOne({ username: options.username });
+    const user = await User.findOne({ username: options.email });
 
     if (!user) {
       return {
@@ -139,7 +139,7 @@ export class UserResolver {
     // store user id session
     // set a cookie in the browser for the user
     // keeps them logged in
-    req.session.user = { username: options.username };
+    req.session.user = { username: options.email };
 
     return {
       user,
