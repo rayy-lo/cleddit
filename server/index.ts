@@ -21,13 +21,6 @@ createConnection()
     app.set("trust proxy", process.env.NODE_ENV !== "production");
 
     app.use(
-      cors({
-        origin: "http://localhost:3000",
-        credentials: true,
-      })
-    );
-
-    app.use(
       session({
         name: "qid",
         store: new RedisStore({ client: redisClient }),
@@ -37,9 +30,15 @@ createConnection()
         cookie: {
           maxAge: 1000 * 60 * 60 * 24,
           httpOnly: true,
-          sameSite: "none",
-          secure: true,
+          secure: false,
         },
+      })
+    );
+
+    app.use(
+      cors({
+        origin: "http://localhost:3000",
+        credentials: true,
       })
     );
 
@@ -55,7 +54,11 @@ createConnection()
 
     apolloServer.applyMiddleware({
       app,
-      cors: false,
+      path: "/",
+      cors: {
+        origin: "http://localhost:3000",
+        credentials: true,
+      },
     });
 
     app.listen(3100, () => {

@@ -12,6 +12,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
     link: new HttpLink({
       uri: "http://localhost:3100/graphql",
+      credentials: "include",
     }),
     cache: new InMemoryCache(),
   });
