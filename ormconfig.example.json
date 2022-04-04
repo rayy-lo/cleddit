@@ -7,7 +7,7 @@
   "database": "database",
   "synchronize": true,
   "logging": true,
-  "entities": ["src/modules/**/*.entity.{ts,js}"],
+  "entities": ["server/entity/*.{ts,js}"],
   "migrations": ["src/migrations/**/*.{ts,js}"],
   "subscribers": ["src/subscriber/**/*.ts"]
 }
