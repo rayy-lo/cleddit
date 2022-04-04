@@ -2,3 +2,4 @@
 /dist
 ormconfig.json
 .next
+dump.rdb
