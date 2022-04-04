@@ -85,7 +85,7 @@ export class UserResolver {
         errors: [
           {
             field: "email",
-            message: "Email is already in use",
+            message: "Email is already in use.",
           },
         ],
       };
@@ -116,8 +116,8 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "username",
-            message: "Username doesn't exist",
+            field: "email",
+            message: "Incorrect Credentials",
           },
         ],
       };
@@ -130,7 +130,7 @@ export class UserResolver {
         errors: [
           {
             field: "password",
-            message: "Password is incorrect",
+            message: "Incorrect Credentials",
           },
         ],
       };
