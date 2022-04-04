@@ -84,8 +84,8 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "username",
-            message: "Username in use",
+            field: "email",
+            message: "Email is already in use",
           },
         ],
       };
