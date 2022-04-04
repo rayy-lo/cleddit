@@ -3,6 +3,7 @@ import { Box, Button, Checkbox, Flex, VStack } from "@chakra-ui/react";
 import { InputField } from "../components/InputField";
 import { gql, useMutation } from "@apollo/client";
 import { toErrorMap } from "../utils/toErrorMap";
+import { useRouter } from "next/router";
 
 interface RegisterProps {}
 
@@ -22,6 +23,7 @@ const REGISTER_MUT = gql`
 
 const Register: React.FC<RegisterProps> = ({}) => {
   const [register] = useMutation(REGISTER_MUT);
+  const router = useRouter();
 
   return (
     <Flex bg="gray.100" align="center" justify="center" h="100vh">
@@ -44,6 +46,8 @@ const Register: React.FC<RegisterProps> = ({}) => {
 
             if (response.data?.register.errors) {
               actions.setErrors(toErrorMap(response.data.register.errors));
+            } else if (response.data.register.user) {
+              router.push("/");
             }
 
             actions.setSubmitting(false);
@@ -68,14 +72,6 @@ const Register: React.FC<RegisterProps> = ({}) => {
                   label="Password"
                   errors={errors}
                 />
-                <Field
-                  as={Checkbox}
-                  id="rememberMe"
-                  name="rememberMe"
-                  colorScheme="purple"
-                >
-                  Remember me?
-                </Field>
                 <Button
                   isLoading={isSubmitting}
                   type="submit"
