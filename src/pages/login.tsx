@@ -4,10 +4,12 @@ import { InputField } from "../components/InputField";
 import { gql, useMutation } from "@apollo/client";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { CORE_USER_FIELDS } from "../fragments";
 
 interface LoginProps {}
 
 const LOGIN_QUERY = gql`
+  ${CORE_USER_FIELDS}
   mutation Login($options: UsernamePasswordInput!) {
     login(options: $options) {
       errors {
@@ -15,7 +17,7 @@ const LOGIN_QUERY = gql`
         message
       }
       user {
-        id
+        ...CoreUserFields
       }
     }
   }

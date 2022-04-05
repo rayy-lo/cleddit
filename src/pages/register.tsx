@@ -4,10 +4,12 @@ import { InputField } from "../components/InputField";
 import { gql, useMutation } from "@apollo/client";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { CORE_USER_FIELDS } from "../fragments";
 
 interface RegisterProps {}
 
 const REGISTER_MUT = gql`
+  ${CORE_USER_FIELDS}
   mutation Register($options: UsernamePasswordInput!) {
     register(options: $options) {
       errors {
@@ -15,7 +17,7 @@ const REGISTER_MUT = gql`
         message
       }
       user {
-        id
+        ...CoreUserFields
       }
     }
   }
